@@ -11,6 +11,10 @@ public class RegisterController extends Controller {
         this.registerView = new RegisterView(this);
     }
 
+    public void handleLoginButton() {
+        loadLoginView("LoginView");
+    }
+
     public RegisterView getView() {
         return registerView;
     }

@@ -8,8 +8,6 @@ public abstract class Controller {
     private static final JPanel viewsLogin = new JPanel(new CardLayout());
     private static final JPanel viewsViewer = new JPanel(new BorderLayout());
     private static final JPanel viewerContent = new JPanel(new CardLayout());
-    private static final JPanel navBar = new JPanel();
-
     static {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(900, 700);
@@ -19,13 +17,12 @@ public abstract class Controller {
         mainFrame.add(viewsLogin);
 
         viewsViewer.add(viewerContent, BorderLayout.CENTER);
-        viewsViewer.add(navBar, BorderLayout.SOUTH);
     }
 
     public abstract void run();
 
     public static void addView(String viewName, Component view) {
-        viewsViewer.add(view, viewName);
+        viewerContent.add(view, viewName);
     }
 
     public static void addLoginView(String viewName, Component view) {
@@ -47,5 +44,11 @@ public abstract class Controller {
     public static void loadLoginView(String viewName) {
         CardLayout cl = (CardLayout) viewsLogin.getLayout();
         cl.show(viewsLogin, viewName);
+    }
+
+    public static void setViewerSidebar(JPanel panel) {
+        viewsViewer.add(panel, BorderLayout.WEST);
+        viewsViewer.revalidate();
+        viewsViewer.repaint();
     }
 }

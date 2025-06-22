@@ -16,7 +16,7 @@ public class LoginController extends Controller {
     }
 
     public void handleLoginButton(String dni, String pass) {
-
+        exitLoginView();
     }
 
     public LoginView getView() {

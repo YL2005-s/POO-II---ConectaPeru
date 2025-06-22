@@ -4,6 +4,7 @@ import core.Controller;
 import views.auth.LoginView;
 import views.app.MenuView;
 import views.auth.RegisterView;
+import views.components.SidebarComponent;
 
 public class MenuController extends Controller {
     private final MenuView menuView = new MenuView(this);
@@ -18,6 +19,10 @@ public class MenuController extends Controller {
 
         addLoginView("LoginView", getLoginView());
         addLoginView("RegisterView", getRegisterView());
+        addView("MenuView", menuView);
+
+        setViewerSidebar(new SidebarComponent());
+
 
         mainFrame.setVisible(true);
     }
