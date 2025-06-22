@@ -11,7 +11,7 @@ import java.awt.*;
 public class MenuView extends JPanel {
     private final MenuController menuController;
 
-    private JPanel recentJobsPanel;
+    private JPanel jobsPanel;
 
     public MenuView(MenuController menuController) {
         this.menuController = menuController;
@@ -20,6 +20,7 @@ public class MenuView extends JPanel {
         make_lbl_logo();
         make_locationPanel();
         make_searchPanel();
+        make_jobsPanel();
     }
 
     private void make_frame() {
@@ -29,7 +30,7 @@ public class MenuView extends JPanel {
 
     private void make_lbl_logo() {
         JLabel lbl_logo = new JLabel();
-        lbl_logo.setIcon(ImageUtils.loadIcon("img/logo_cpr.png", 370, 130));
+        lbl_logo.setIcon(ImageUtils.loadIcon("img/logo_cpr.png", 350, 140));
         lbl_logo.setHorizontalAlignment(SwingConstants.CENTER);
         lbl_logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -45,6 +46,7 @@ public class MenuView extends JPanel {
 
     private void make_locationPanel() {
         JPanel locationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        locationPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         locationPanel.setBackground(Color.WHITE);
 
         JLabel icon = new JLabel(ImageUtils.loadIcon("icon/icon_location.png", 20, 20));
@@ -66,33 +68,67 @@ public class MenuView extends JPanel {
     }
 
     private void make_searchPanel() {
-        // Panel wrapper que se expandirá horizontalmente
         JPanel wrapper = new JPanel(new BorderLayout());
-        // Permitimos que BoxLayout lo estire en X hasta el máximo
-        wrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
-        // Margen izquierdo/derecho de 20px para no ocupar TODO el ancho
-        wrapper.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
         wrapper.setBackground(Color.WHITE);
+        wrapper.setMaximumSize(new Dimension(600, 50));
+        wrapper.setAlignmentX(Component.CENTER_ALIGNMENT);
+        wrapper.setBorder(BorderFactory.createEmptyBorder(6, 0, 6, 0));
 
-        // El propio text field, con un tamaño preferido razonable
         JTextField tf_search = new JTextField();
         tf_search.setFont(new Font("SansSerif", Font.PLAIN, 16));
         tf_search.setMargin(new Insets(8, 10, 8, 10));
-        tf_search.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(new Color(180, 180, 180), 1, true),
-                BorderFactory.createEmptyBorder(8, 10, 8, 10)
-        ));
         tf_search.setBackground(new Color(245, 245, 245));
-
-        // Lo añadimos al centro del wrapper, para que se expanda ahí
+        tf_search.setToolTipText("Busca ofertas de empleo...");
         wrapper.add(tf_search, BorderLayout.CENTER);
 
-        // Finalmente lo agregamos a la vista
         add(wrapper);
-        add(Box.createRigidArea(new Dimension(0, 30)));
+        add(Box.createRigidArea(new Dimension(0, 15)));
     }
 
+    private void make_jobsPanel() {
+        JLabel lbl_section = new JLabel("Trabajos recientes");
+        lbl_section.setFont(new Font("SansSerif", Font.BOLD, 26));
+        lbl_section.setForeground(Color.DARK_GRAY);
+        lbl_section.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(lbl_section);
+        add(Box.createRigidArea(new Dimension(0, 15)));
 
+        jobsPanel = new JPanel();
+        jobsPanel.setLayout(new BoxLayout(jobsPanel, BoxLayout.Y_AXIS));
+        jobsPanel.setBackground(Color.WHITE);
+        jobsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        addJobItem("Desarrollador Java", "Empresa A");
+        addJobItem("Analista de Datos", "Empresa B");
+        addJobItem("Analista de USIL", "Empresa C");
+
+        add(jobsPanel);
+    }
+
+    private void addJobItem(String title, String company) {
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setMaximumSize(new Dimension(650, 60));
+        wrapper.setBorder(new EmptyBorder(0, 20, 0, 20));
+        wrapper.setBackground(Color.WHITE);
+
+        JPanel jobPanel = new JPanel(new BorderLayout());
+        jobPanel.setBackground(new Color(245, 245, 245));
+        jobPanel.setBorder(new EmptyBorder(8, 10, 8, 10));
+
+        JLabel lbl_title = new JLabel(title);
+        lbl_title.setFont(new Font("SansSerif", Font.BOLD, 16));
+        jobPanel.add(lbl_title, BorderLayout.NORTH);
+
+        JLabel lbl_company = new JLabel(company);
+        lbl_company.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        lbl_company.setForeground(Color.GRAY);
+        jobPanel.add(lbl_company, BorderLayout.SOUTH);
+        jobPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        wrapper.add(jobPanel, BorderLayout.CENTER);
+        jobsPanel.add(wrapper);
+        jobsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+    }
 
 
 

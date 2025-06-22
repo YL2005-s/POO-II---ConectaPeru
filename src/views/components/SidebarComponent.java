@@ -1,5 +1,6 @@
 package views.components;
 
+import controllers.component.SidebarController;
 import utils.ImageUtils;
 
 import javax.swing.*;
@@ -10,14 +11,18 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class SidebarComponent extends JPanel {
-    private final Map<String, String> menuEntries = new LinkedHashMap<>();
+    private record MenuEntry(String iconPath, String viewName) { }
+
+    private final SidebarController sidebarController;
+    private final Map<String, MenuEntry> entries = new LinkedHashMap<>();
 
     private JPanel headerPanel;
     private JPanel menuPanel;
     private JPanel logOutPanel;
     private boolean isExpanded = false;
 
-    public SidebarComponent() {
+    public SidebarComponent(SidebarController sidebarController) {
+        this.sidebarController = sidebarController;
         setupEntries();
 
         make_frame();
@@ -27,11 +32,11 @@ public class SidebarComponent extends JPanel {
     }
 
     private void setupEntries() {
-        menuEntries.put("Inicio", "icon/icon_home.png");
-        menuEntries.put("Perfil", "icon/icon_user.png");
-        menuEntries.put("Notificaciones", "icon/icon_notification.png");
-        menuEntries.put("Empleos", "icon/icon_suitcase.png");
-        menuEntries.put("Ajustes", "icon/icon_settings.png");
+        entries.put("Inicio",   new MenuEntry("icon/icon_home.png", "MenuView"));
+        entries.put("Perfil",  new MenuEntry("icon/icon_user.png", "ProfileView"));
+        entries.put("Notificaciones", new MenuEntry("icon/icon_notification.png", "NotificationView"));
+        entries.put("Empleos",  new MenuEntry("icon/icon_suitcase.png", "JobsView"));
+        entries.put("Ajustes",  new MenuEntry("icon/icon_settings.png", "SettingsView"));
     }
 
     private void make_frame() {
@@ -65,21 +70,19 @@ public class SidebarComponent extends JPanel {
         menuPanel.setBackground(new Color(245, 12, 12));
         menuPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
 
-        for (Map.Entry<String, String> entry : menuEntries.entrySet()) {
-            addMenuItem(entry.getKey(), entry.getValue());
-        }
+        entries.forEach(this::addMenuItem);
 
         menuPanel.setVisible(false);
         add(menuPanel, BorderLayout.CENTER);
     }
 
-    private void addMenuItem(String text, String iconPath) {
+    private void addMenuItem(String text, MenuEntry entry) {
         JPanel itemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         itemPanel.setBackground(new Color(245, 12, 12));
         itemPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        JLabel icon = new JLabel(ImageUtils.loadIcon(iconPath, 24, 24));
+        JLabel icon = new JLabel(ImageUtils.loadIcon(entry.iconPath(), 24, 24));
         itemPanel.add(icon);
 
         JLabel label = new JLabel(text);
@@ -94,7 +97,9 @@ public class SidebarComponent extends JPanel {
         itemPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                if (entry.viewName() != null) {
+                    sidebarController.handleMenuItem(entry.viewName());
+                }
             }
         });
     }

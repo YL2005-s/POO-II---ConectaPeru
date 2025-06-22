@@ -128,7 +128,6 @@ public class LoginView extends JPanel {
         btn_login.setFont(new Font("SansSerif", Font.BOLD, 20));
         btn_login.setForeground(Color.WHITE);
         btn_login.setBackground(new Color(244, 33, 46));
-        btn_login.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         btn_login.setFocusPainted(false);
         btn_login.setContentAreaFilled(false);
         btn_login.setOpaque(true);
