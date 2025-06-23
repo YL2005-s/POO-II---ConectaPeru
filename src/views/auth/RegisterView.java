@@ -1,6 +1,9 @@
 package views.auth;
 
 import controllers.RegisterController;
+import entities.PersonalUser;
+import entities.Role;
+import entities.User;
 import utils.ImageUtils;
 
 import javax.swing.*;
@@ -230,7 +233,14 @@ public class RegisterView extends JPanel {
                 return;
             }
 
+            User user = new PersonalUser.Builder()
+                    .nombre(fullName)
+                    .dni(dni)
+                    .password(password)
+                    .rol(Role.CANDIDATO)
+                    .build();
 
+            registerController.handleRegisterButton(user);
         });
     }
 

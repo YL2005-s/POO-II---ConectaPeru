@@ -1,6 +1,7 @@
 package controllers;
 
 import core.Controller;
+import entities.User;
 import views.auth.RegisterView;
 
 public class RegisterController extends Controller {
@@ -9,6 +10,15 @@ public class RegisterController extends Controller {
     @Override
     public void run() {
         this.registerView = new RegisterView(this);
+    }
+
+    public void handleRegisterButton(User user) {
+        try {
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void handleLoginButton() {

@@ -4,16 +4,14 @@ public abstract class User {
     private String dni;
     private String password;
     private String nombre;
-    private String apellido;
     private Role rol;
 
     public User() {}
 
-    public User(String dni, String password, String nombre, String apellido, Role rol) {
+    public User(String dni, String password, String nombre, Role rol) {
         this.dni = dni;
         this.password = password;
         this.nombre = nombre;
-        this.apellido = apellido;
         this.rol = rol;
     }
 
@@ -39,14 +37,6 @@ public abstract class User {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
     }
 
     public Role getRol() {
