@@ -34,9 +34,7 @@ public class SidebarComponent extends JPanel {
     private void setupEntries() {
         entries.put("Inicio",   new MenuEntry("icon/icon_home.png", "MenuView"));
         entries.put("Perfil",  new MenuEntry("icon/icon_user.png", "ProfileView"));
-        entries.put("Notificaciones", new MenuEntry("icon/icon_notification.png", "NotificationView"));
         entries.put("Empleos",  new MenuEntry("icon/icon_suitcase.png", "JobsView"));
-        entries.put("Ajustes",  new MenuEntry("icon/icon_settings.png", "SettingsView"));
     }
 
     private void make_frame() {
@@ -123,7 +121,7 @@ public class SidebarComponent extends JPanel {
         logOutPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                sidebarController.handleLogoutItem();
             }
         });
 

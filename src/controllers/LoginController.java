@@ -39,8 +39,7 @@ public class LoginController extends Controller {
                 exitLoginView();
             } else {
                 JOptionPane.showMessageDialog(null, "Contraseña incorrecta.",
-                        "Error de autenticación", JOptionPane.ERROR_MESSAGE
-                );
+                        "Error de autenticación", JOptionPane.ERROR_MESSAGE);
             }
             return;
         }
@@ -52,15 +51,13 @@ public class LoginController extends Controller {
                 exitLoginView();
             } else {
                 JOptionPane.showMessageDialog(null, "Contraseña incorrecta.",
-                        "Error de autenticación", JOptionPane.ERROR_MESSAGE
-                );
+                        "Error de autenticación", JOptionPane.ERROR_MESSAGE);
             }
             return;
         }
 
         JOptionPane.showMessageDialog(null, "No existe una cuenta con ese DNI.",
-                "Error de autenticación", JOptionPane.ERROR_MESSAGE
-        );
+                "Error de autenticación", JOptionPane.ERROR_MESSAGE);
     }
 
     public LoginView getView() {

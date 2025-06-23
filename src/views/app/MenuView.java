@@ -2,16 +2,19 @@ package views.app;
 
 import controllers.MenuController;
 import entities.User;
-import session.SessionListener;
+import entities.Vacant;
+import models.Listener;
 import session.SessionManager;
 import utils.ImageUtils;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class MenuView extends JPanel implements SessionListener {
+public class MenuView extends JPanel implements Listener<User>   {
     private final MenuController menuController;
 
     private JPanel jobsPanel;
@@ -27,11 +30,11 @@ public class MenuView extends JPanel implements SessionListener {
         make_searchPanel();
         make_jobsPanel();
 
-        SessionManager.getInstance().addListener(this);
+        SessionManager.getInstance().addUserListener(this);
     }
 
     @Override
-    public void onUserChanged(User user) {
+    public void onItemChanged(User user) {
         SwingUtilities.invokeLater(() -> {
             if (user != null) {
                 lbl_welcome.setText("Hola, " + user.getNombre().split("\\s+")[0]);
@@ -98,6 +101,11 @@ public class MenuView extends JPanel implements SessionListener {
 
         add(wrapper);
         add(Box.createRigidArea(new Dimension(0, 15)));
+
+        tf_search.addActionListener(e -> {
+            String query = tf_search.getText().trim();
+            menuController.searchVacantes(query);
+        });
     }
 
     private void make_jobsPanel() {
@@ -113,36 +121,59 @@ public class MenuView extends JPanel implements SessionListener {
         jobsPanel.setBackground(Color.WHITE);
         jobsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        addJobItem("Desarrollador Java", "Empresa A");
-        addJobItem("Analista de Datos", "Empresa B");
-        addJobItem("Analista de USIL", "Empresa C");
-
         add(jobsPanel);
     }
 
-    private void addJobItem(String title, String company) {
-        JPanel wrapper = new JPanel(new BorderLayout());
-        wrapper.setMaximumSize(new Dimension(650, 60));
-        wrapper.setBorder(new EmptyBorder(0, 20, 0, 20));
-        wrapper.setBackground(Color.WHITE);
+    public void setupVacant(List<Vacant> vacant) {
+        jobsPanel.removeAll();
 
-        JPanel jobPanel = new JPanel(new BorderLayout());
-        jobPanel.setBackground(new Color(245, 245, 245));
-        jobPanel.setBorder(new EmptyBorder(8, 10, 8, 10));
+        for (Vacant va : vacant) {
+            jobsPanel.add(addJobItem(va));
+            jobsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        }
 
-        JLabel lbl_title = new JLabel(title);
-        lbl_title.setFont(new Font("SansSerif", Font.BOLD, 16));
-        jobPanel.add(lbl_title, BorderLayout.NORTH);
-
-        JLabel lbl_company = new JLabel(company);
-        lbl_company.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        lbl_company.setForeground(Color.GRAY);
-        jobPanel.add(lbl_company, BorderLayout.SOUTH);
-        jobPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        wrapper.add(jobPanel, BorderLayout.CENTER);
-        jobsPanel.add(wrapper);
-        jobsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        jobsPanel.revalidate();
+        jobsPanel.repaint();
     }
 
+    private JPanel addJobItem(Vacant vacant) {
+        JPanel wrap = new JPanel(new BorderLayout());
+        wrap.setMaximumSize(new Dimension(650, 60));
+        wrap.setBackground(Color.WHITE);
+
+        JPanel jp = new JPanel(new BorderLayout());
+        jp.setBackground(new Color(245, 245, 245));
+        jp.setBorder(new EmptyBorder(8, 10, 8, 10));
+
+        JLabel title = new JLabel(vacant.getTitulo());
+        title.setFont(new Font("SansSerif", Font.BOLD, 16));
+        jp.add(title, BorderLayout.NORTH);
+
+        JLabel info = new JLabel("S/ " + vacant.getSalario() + " • " + vacant.getUbicacion());
+        info.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        jp.add(info, BorderLayout.SOUTH);
+
+        jp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        jp.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                User user = SessionManager.getInstance().getAttribute("currentUser", User.class);
+                String dni = (user != null) ? user.getDni() : "";
+
+                menuController.postulate(vacant, dni);
+            }
+        });
+
+        wrap.add(jp, BorderLayout.CENTER);
+        return wrap;
+    }
+
+    public void showPostulationSuccess(Vacant v) {
+        JOptionPane.showMessageDialog(this, "Te has postulado exitosamente a " + v.getTitulo(),
+                "Postulación exitosa", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showPostulationError(Vacant v) {
+        JOptionPane.showMessageDialog(this, "Error al postular a " + v.getTitulo(),
+                "Postulación fallida", JOptionPane.ERROR_MESSAGE);
+    }
 }

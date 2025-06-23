@@ -1,10 +1,8 @@
 package views.app;
 
 import controllers.ProfileController;
-import entities.BusinessUser;
-import entities.PersonalUser;
 import entities.User;
-import session.SessionListener;
+import models.Listener;
 import session.SessionManager;
 import utils.ImageUtils;
 
@@ -12,7 +10,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class ProfileView extends JPanel implements SessionListener {
+public class ProfileView extends JPanel implements Listener<User> {
     private final ProfileController profileController;
 
     private JTextField tf_name;
@@ -31,11 +29,11 @@ public class ProfileView extends JPanel implements SessionListener {
         make_cvPanel();
         make_btn_save();
 
-        SessionManager.getInstance().addListener(this);
+        SessionManager.getInstance().addUserListener(this);
     }
 
     @Override
-    public void onUserChanged(User user) {
+    public void onItemChanged(User user) {
         SwingUtilities.invokeLater(() -> {
             if (user != null) {
                 tf_name.setText(user.getNombre());
@@ -181,5 +179,4 @@ public class ProfileView extends JPanel implements SessionListener {
                     "Éxito", JOptionPane.INFORMATION_MESSAGE);
         });
     }
-
 }

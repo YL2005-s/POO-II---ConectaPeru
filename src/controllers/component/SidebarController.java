@@ -1,6 +1,7 @@
 package controllers.component;
 
 import core.Controller;
+import session.SessionManager;
 import views.components.SidebarComponent;
 
 public class SidebarController extends Controller {
@@ -13,6 +14,11 @@ public class SidebarController extends Controller {
 
     public void handleMenuItem(String view) {
         loadView(view);
+    }
+
+    public void handleLogoutItem() {
+        SessionManager.getInstance().clear();
+        exitMenuView();
     }
 
     public SidebarComponent getSidebarComponent() {

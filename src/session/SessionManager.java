@@ -1,6 +1,8 @@
 package session;
 
 import entities.User;
+import entities.Vacant;
+import models.Listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,16 +12,16 @@ import java.util.Map;
 public class SessionManager {
     private static final SessionManager instance = new SessionManager();
     private final Map<String, Object> data = new HashMap<>();
-    private final List<SessionListener> listeners = new ArrayList<>();
+    private final List<Listener<User>> userListeners = new ArrayList<>();
 
     private SessionManager() {}
 
-    public void addListener(SessionListener listener) {
-        listeners.add(listener);
+    public void addUserListener(Listener<User> listener) {
+        userListeners.add(listener);
     }
 
-    public void removeListener(SessionListener listener) {
-        listeners.remove(listener);
+    public void removeUserListener(Listener<User> listener) {
+        userListeners.remove(listener);
     }
 
     public void setAttribute(String key, Object value) {
@@ -27,8 +29,8 @@ public class SessionManager {
 
         if ("currentUser".equals(key)) {
             User u = (User) value;
-            for (SessionListener l : listeners) {
-                l.onUserChanged(u);
+            for (Listener<User> l : userListeners) {
+                l.onItemChanged(u);
             }
         }
     }
@@ -44,8 +46,8 @@ public class SessionManager {
     public void clear() {
         data.clear();
 
-        for (SessionListener l : listeners) {
-            l.onUserChanged(null);
+        for (Listener<User> l : userListeners) {
+            l.onItemChanged(null);
         }
     }
 

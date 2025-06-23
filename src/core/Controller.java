@@ -36,6 +36,13 @@ public abstract class Controller {
         mainFrame.repaint();
     }
 
+    public static void exitMenuView() {
+        mainFrame.remove(viewsViewer);
+        mainFrame.add(viewsLogin);
+        mainFrame.revalidate();
+        mainFrame.repaint();
+    }
+
     public static void loadView(String viewName) {
         CardLayout cl = (CardLayout) viewerContent.getLayout();
         cl.show(viewerContent, viewName);
