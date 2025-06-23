@@ -1,6 +1,9 @@
 package views.app;
 
 import controllers.MenuController;
+import entities.User;
+import session.SessionListener;
+import session.SessionManager;
 import utils.ImageUtils;
 
 import javax.swing.*;
@@ -8,10 +11,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class MenuView extends JPanel {
+public class MenuView extends JPanel implements SessionListener {
     private final MenuController menuController;
 
     private JPanel jobsPanel;
+    private JLabel lbl_welcome;
+    private JLabel lbl_location;
 
     public MenuView(MenuController menuController) {
         this.menuController = menuController;
@@ -21,6 +26,21 @@ public class MenuView extends JPanel {
         make_locationPanel();
         make_searchPanel();
         make_jobsPanel();
+
+        SessionManager.getInstance().addListener(this);
+    }
+
+    @Override
+    public void onUserChanged(User user) {
+        SwingUtilities.invokeLater(() -> {
+            if (user != null) {
+                lbl_welcome.setText("Hola, " + user.getNombre().split("\\s+")[0]);
+                lbl_location.setText((String) SessionManager.getInstance().getAttribute("sessionLocation"));
+            } else {
+                lbl_welcome.setText("Hola, Invitado");
+                lbl_location.setText("San Juan de Lurigancho");
+            }
+        });
     }
 
     private void make_frame() {
@@ -34,7 +54,7 @@ public class MenuView extends JPanel {
         lbl_logo.setHorizontalAlignment(SwingConstants.CENTER);
         lbl_logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel lbl_welcome = new JLabel("Hola, Usuario", SwingConstants.CENTER);
+        lbl_welcome = new JLabel("Hola, Invitado", SwingConstants.CENTER);
         lbl_welcome.setFont(new Font("SansSerif", Font.BOLD, 22));
         lbl_welcome.setForeground(Color.DARK_GRAY);
         lbl_welcome.setHorizontalAlignment(SwingConstants.CENTER);
@@ -52,15 +72,10 @@ public class MenuView extends JPanel {
         JLabel icon = new JLabel(ImageUtils.loadIcon("icon/icon_location.png", 20, 20));
         locationPanel.add(icon);
 
-        JLabel lbl_location = new JLabel("San Juan de Lurigancho");
+        lbl_location = new JLabel("San Juan de Lurigancho");
         lbl_location.setFont(new Font("SansSerif", Font.PLAIN, 16));
         lbl_location.setForeground(Color.GRAY);
         locationPanel.add(lbl_location);
-
-        JLabel btnChange = new JLabel(ImageUtils.loadIcon("icon/icon_edit.png", 18, 18));
-        btnChange.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnChange.setToolTipText("Cambiar ubicación");
-        locationPanel.add(btnChange);
 
         locationPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(Box.createRigidArea(new Dimension(0, 15)));
@@ -129,7 +144,5 @@ public class MenuView extends JPanel {
         jobsPanel.add(wrapper);
         jobsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
     }
-
-
 
 }

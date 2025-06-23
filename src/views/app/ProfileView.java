@@ -1,13 +1,18 @@
 package views.app;
 
 import controllers.ProfileController;
+import entities.BusinessUser;
+import entities.PersonalUser;
+import entities.User;
+import session.SessionListener;
+import session.SessionManager;
 import utils.ImageUtils;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class ProfileView extends JPanel {
+public class ProfileView extends JPanel implements SessionListener {
     private final ProfileController profileController;
 
     private JTextField tf_name;
@@ -25,6 +30,26 @@ public class ProfileView extends JPanel {
         make_fields();
         make_cvPanel();
         make_btn_save();
+
+        SessionManager.getInstance().addListener(this);
+    }
+
+    @Override
+    public void onUserChanged(User user) {
+        SwingUtilities.invokeLater(() -> {
+            if (user != null) {
+                tf_name.setText(user.getNombre());
+                tf_phone.setText((String) SessionManager.getInstance().getAttribute("sessionPhone"));
+                tf_email.setText((String) SessionManager.getInstance().getAttribute("sessionMail"));
+                tf_location.setText((String) SessionManager.getInstance().getAttribute("sessionLocation"));
+            } else {
+                tf_name.setText("");
+                tf_phone.setText("");
+                tf_email.setText("");
+                tf_location.setText("");
+                lbl_cvFile.setText("(Ningún archivo seleccionado)");
+            }
+        });
     }
 
     private void make_frame() {
@@ -136,6 +161,25 @@ public class ProfileView extends JPanel {
 
         add(btn_save);
         add(Box.createRigidArea(new Dimension(0, 15)));
+
+        btn_save.addActionListener(e -> {
+            User u = SessionManager.getInstance().getAttribute("currentUser", User.class);
+            if (u == null) {
+                JOptionPane.showMessageDialog(this, "No hay usuario logueado.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String fullName = tf_name.getText().trim();
+            u.setNombre(fullName);
+            SessionManager.getInstance().setAttribute("sessionPhone", tf_phone.getText().trim());
+            SessionManager.getInstance().setAttribute("sessionMail", tf_email.getText().trim());
+            SessionManager.getInstance().setAttribute("sessionLocation", tf_location.getText().trim());
+            SessionManager.getInstance().setAttribute("currentUser", u);
+
+            JOptionPane.showMessageDialog(this, "Perfil actualizado correctamente.",
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        });
     }
 
 }

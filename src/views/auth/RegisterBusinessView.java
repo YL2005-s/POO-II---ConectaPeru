@@ -1,6 +1,7 @@
 package views.auth;
 
-import controllers.RegisterController;
+import controllers.RegisterBusinessController;
+import entities.BusinessUser;
 import entities.PersonalUser;
 import entities.Role;
 import entities.User;
@@ -12,24 +13,25 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class RegisterView extends JPanel {
-    private final RegisterController registerController;
+public class RegisterBusinessView extends JPanel {
+    private final RegisterBusinessController registerBusinessController;
 
     private JTextField tf_fullName;
     private JTextField tf_dni;
+    private JTextField tf_companyName;
+    private JTextField tf_companySector;
     private JPasswordField pf_password;
-    private JPasswordField pf_confirmPassword;
 
-    public RegisterView(RegisterController registerController) {
-        this.registerController = registerController;
+    public RegisterBusinessView(RegisterBusinessController registerBusinessController) {
+        this.registerBusinessController = registerBusinessController;
 
         make_frame();
         make_lbl_logo();
         make_field_fullName();
         make_field_dni();
+        make_field_companyName();
+        make_field_companySector();
         make_field_password();
-        make_field_confirmPassword();
-        make_lbl_enterprise();
         make_btn_register();
         make_lbl_goBack();
     }
@@ -45,7 +47,7 @@ public class RegisterView extends JPanel {
         lbl_logo.setHorizontalAlignment(SwingConstants.CENTER);
         lbl_logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel lbl_welcome = new JLabel("Registro de Usuario", SwingConstants.CENTER);
+        JLabel lbl_welcome = new JLabel("Registro de Usuario Empresa", SwingConstants.CENTER);
         lbl_welcome.setFont(new Font("SansSerif", Font.BOLD, 28));
         lbl_welcome.setForeground(Color.DARK_GRAY);
         lbl_welcome.setHorizontalAlignment(SwingConstants.CENTER);
@@ -76,7 +78,7 @@ public class RegisterView extends JPanel {
         tf_fullName.setBackground(new Color(245, 245, 245));
         textPanel.add(tf_fullName, BorderLayout.CENTER);
 
-        add(Box.createRigidArea(new Dimension(0, 15)));
+        add(Box.createRigidArea(new Dimension(0, 10)));
         add(textPanel);
     }
 
@@ -101,7 +103,57 @@ public class RegisterView extends JPanel {
         tf_dni.setBackground(new Color(245, 245, 245));
         textPanel.add(tf_dni, BorderLayout.CENTER);
 
-        add(Box.createRigidArea(new Dimension(0, 15)));
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(textPanel);
+    }
+
+    private void make_field_companyName() {
+        JPanel textPanel = new JPanel(new BorderLayout(10, 5));
+        textPanel.setBackground(Color.WHITE);
+        textPanel.setMaximumSize(new Dimension(400, 65));
+        textPanel.setAlignmentX(CENTER_ALIGNMENT);
+
+        JLabel lbl_text = new JLabel("Razón Social");
+        lbl_text.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        lbl_text.setForeground(Color.DARK_GRAY);
+        textPanel.add(lbl_text, BorderLayout.NORTH);
+
+        tf_companyName = new JTextField();
+        tf_companyName.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        tf_companyName.setMargin(new Insets(8, 10, 8, 10));
+        tf_companyName.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(new Color(180, 180, 180), 1, true),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
+        tf_companyName.setBackground(new Color(245, 245, 245));
+        textPanel.add(tf_companyName, BorderLayout.CENTER);
+
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(textPanel);
+    }
+
+    private void make_field_companySector() {
+        JPanel textPanel = new JPanel(new BorderLayout(10, 5));
+        textPanel.setBackground(Color.WHITE);
+        textPanel.setMaximumSize(new Dimension(400, 65));
+        textPanel.setAlignmentX(CENTER_ALIGNMENT);
+
+        JLabel lbl_text = new JLabel("Sector");
+        lbl_text.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        lbl_text.setForeground(Color.DARK_GRAY);
+        textPanel.add(lbl_text, BorderLayout.NORTH);
+
+        tf_companySector = new JTextField();
+        tf_companySector.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        tf_companySector.setMargin(new Insets(8, 10, 8, 10));
+        tf_companySector.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(new Color(180, 180, 180), 1, true),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
+        tf_companySector.setBackground(new Color(245, 245, 245));
+        textPanel.add(tf_companySector, BorderLayout.CENTER);
+
+        add(Box.createRigidArea(new Dimension(0, 10)));
         add(textPanel);
     }
 
@@ -138,7 +190,7 @@ public class RegisterView extends JPanel {
         layeredPane.add(btn_eye, JLayeredPane.PALETTE_LAYER);
 
         passwordPanel.add(layeredPane, BorderLayout.CENTER);
-        add(Box.createRigidArea(new Dimension(0, 15)));
+        add(Box.createRigidArea(new Dimension(0, 10)));
         add(passwordPanel);
 
         btn_eye.addActionListener(e -> {
@@ -148,49 +200,6 @@ public class RegisterView extends JPanel {
             } else {
                 pf_password.setEchoChar('•');
                 btn_eye.setIcon(ImageUtils.loadIcon("icon/icon_eye.png", 20, 20));
-            }
-        });
-    }
-
-    private void make_field_confirmPassword() {
-        JPanel confirmPasswordPanel = new JPanel(new BorderLayout(10, 5));
-        confirmPasswordPanel.setBackground(Color.WHITE);
-        confirmPasswordPanel.setMaximumSize(new Dimension(400, 65));
-        confirmPasswordPanel.setAlignmentX(CENTER_ALIGNMENT);
-
-        JLabel lbl_text = new JLabel("Confirmar Contraseña");
-        lbl_text.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        lbl_text.setForeground(Color.DARK_GRAY);
-        confirmPasswordPanel.add(lbl_text, BorderLayout.NORTH);
-
-        pf_confirmPassword = new JPasswordField();
-        pf_confirmPassword.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        pf_confirmPassword.setMargin(new Insets(8, 10, 8, 10));
-        pf_confirmPassword.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(new Color(180, 180, 180), 1, true),
-                BorderFactory.createEmptyBorder(8, 10, 8, 10)
-        ));
-        pf_confirmPassword.setBackground(new Color(245, 245, 245));
-        confirmPasswordPanel.add(pf_confirmPassword, BorderLayout.CENTER);
-
-        add(Box.createRigidArea(new Dimension(0, 15)));
-        add(confirmPasswordPanel);
-    }
-
-    private void make_lbl_enterprise() {
-        JLabel lbl_enterprise = new JLabel("Ir al Registro de Usuario Empresa", SwingConstants.CENTER);
-        lbl_enterprise.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        lbl_enterprise.setForeground(Color.DARK_GRAY);
-        lbl_enterprise.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        lbl_enterprise.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(lbl_enterprise);
-
-        lbl_enterprise.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                registerController.handleRegisterBusinessButton();
             }
         });
     }
@@ -205,15 +214,15 @@ public class RegisterView extends JPanel {
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
         btn.setMaximumSize(new Dimension(300, 45));
 
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        add(Box.createRigidArea(new Dimension(0, 15)));
         add(btn);
-        add(Box.createRigidArea(new Dimension(0, 5)));
 
         btn.addActionListener(e -> {
             String fullName = tf_fullName.getText().trim();
             String dni = tf_dni.getText().trim();
+            String razon = tf_companyName.getText().trim();
+            String sector = tf_companySector.getText().trim();
             String password = new String(pf_password.getPassword()).trim();
-            String confirm = new String(pf_confirmPassword.getPassword()).trim();
 
             if (fullName.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, ingresa tu nombre completo.",
@@ -239,32 +248,34 @@ public class RegisterView extends JPanel {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if (confirm.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Por favor, confirma tu contraseña.",
+            if (razon.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, ingresa tu razón social.",
                         "Error de validación",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if (!password.equals(confirm)) {
-                JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden.",
+            if (sector.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, ingresa tu sector.",
                         "Error de validación",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            User user = new PersonalUser.Builder()
+            User user = new BusinessUser.Builder()
                     .nombre(fullName)
                     .dni(dni)
                     .password(password)
-                    .rol(Role.CANDIDATO)
+                    .rol(Role.ADMINISTRADOR)
+                    .razonSocial(razon)
+                    .sector(sector)
                     .build();
 
-            boolean suceed = registerController.handleRegisterButton(user);
+            boolean suceed = registerBusinessController.handleRegisterButton(user);
             if (suceed) {
                 JOptionPane.showMessageDialog(this, "Usuario creado exitosamente",
                         "Registro exitoso",
                         JOptionPane.INFORMATION_MESSAGE);
-                registerController.handleLoginButton();
+                registerBusinessController.handleLoginButton();
             } else {
                 JOptionPane.showMessageDialog(this, "Hubo un error al crear el usuario",
                         "Error de registro",
@@ -286,7 +297,7 @@ public class RegisterView extends JPanel {
         lbl_register.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                registerController.handleLoginButton();
+                registerBusinessController.handleLoginButton();
             }
         });
     }
